@@ -1,0 +1,40 @@
+#mapid {
+	z-index: 1; 
+	left: 5%; 
+	margin-right: 5%;
+	height: 90vh;
+}
+
+#coords {
+	font-size:16px;
+	margin-left: 15%;
+}
+
+#scrollbar{
+	height: 90vh;
+	overflow: scroll
+}
+
+.vertical-checkbox {
+	font-size: 13px;
+	position: static;
+	width: 233px;
+	left: 15%;
+}
+
+td{
+	font-size: small;
+}
+
+label{
+	font-size: small;
+}
+
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	width: 75%;
+}

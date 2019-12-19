@@ -1,0 +1,677 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+		integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+		crossorigin=""/>
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="application/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script type="application/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	
+	<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+		integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+		crossorigin=""></script>
+	
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+	<script type="application/javascript">
+		var prompt_input;
+		let crime_api_url_global;
+		
+		function Prompt() {
+            $("#dialog-form").dialog({
+                autoOpen: true,
+                modal: true,
+                width: "360px",
+                buttons: {
+                    "Ok": function() {
+                        prompt_input = $("#prompt_input");
+                        Init(prompt_input.val());
+                        $(this).dialog("close");
+                    },
+                    "Cancel": function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+		
+		function Init(crime_api_url) {
+			crime_api_url_global = crime_api_url;
+			
+			$.get(crime_api_url  + '/incidents?start_date=2019-10-01&end_date=2019-10-31', function(data){
+				app.incidents = data;
+				for (var key in app.incidents) {
+					if (app.incidents.hasOwnProperty(key)) {
+						crime_arr[app.incidents[key].neighborhood_number - 1] = crime_arr[app.incidents[key].neighborhood_number - 1] + 1;
+					}
+				}
+
+				let m1 = L.marker([44.922261, -93.027227]).bindPopup().addTo(mymap); //conway
+				let m2 = L.marker([44.977473, -93.025327]).bindPopup().addTo(mymap); //greater east side
+				let m3 = L.marker([44.931064, -93.080664]).bindPopup().addTo(mymap); //west side
+				let m4 = L.marker([44.956252, -93.059503]).bindPopup().addTo(mymap); //dayton's bluff
+				let m5 = L.marker([44.976702, -93.068935]).bindPopup().addTo(mymap); //payne - phalen
+				let m6 = L.marker([44.977405, -93.112685]).bindPopup().addTo(mymap); //north end
+				let m7 = L.marker([44.960065, -93.120456]).bindPopup().addTo(mymap); //thomas - dale
+				let m8 = L.marker([44.948733, -93.127346]).bindPopup().addTo(mymap); //summit - university
+				let m9 = L.marker([44.930766, -93.119996]).bindPopup().addTo(mymap); //west seventh
+				let m10 = L.marker([44.982184, -93.150126]).bindPopup().addTo(mymap); //como
+				let m11 = L.marker([44.966129, -93.161192]).bindPopup().addTo(mymap); //hamline -midway
+				let m12 = L.marker([44.973303, -93.194188]).bindPopup().addTo(mymap); //st. anthony
+				let m13 = L.marker([44.948243, -93.174665]).bindPopup().addTo(mymap); //union park
+				let m14 = L.marker([44.934211, -93.171586]).bindPopup().addTo(mymap); //macalester - groveland
+				let m15 = L.marker([44.910127, -93.170779]).bindPopup().addTo(mymap); //highland
+				let	m16 = L.marker([44.936824, -93.134851]).bindPopup().addTo(mymap); //summit hill
+				let	m17 = L.marker([44.950892, -93.094614]).bindPopup().addTo(mymap); //capitol river
+		
+				m1.on('mouseover', function(event){
+					m1.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[0].toString());
+				})
+				m1.on('mouseout', function(event){
+					m1.closePopup();
+				});
+				m2.on('mouseover', function(event){
+					m2.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[1].toString());
+				})
+				m2.on('mouseout', function(event){
+					m2.closePopup();
+				});
+				m3.on('mouseover', function(event){
+					m3.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[2].toString());
+				})
+				m3.on('mouseout', function(event){
+					m3.closePopup();
+				});
+				m4.on('mouseover', function(event){
+					m4.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[3].toString());
+				})
+				m4.on('mouseout', function(event){
+					m4.closePopup();
+				});
+				m5.on('mouseover', function(event){
+					m5.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[4].toString());
+				})
+				m5.on('mouseout', function(event){
+					m5.closePopup();
+				});
+				m6.on('mouseover', function(event){
+					m6.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[5].toString());
+				})
+				m6.on('mouseout', function(event){
+					m6.closePopup();
+				});
+				m7.on('mouseover', function(event){
+					m7.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[6].toString());
+				})
+				m7.on('mouseout', function(event){
+					m7.closePopup();
+				});
+				m8.on('mouseover', function(event){
+					m8.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[7].toString());
+				})
+				m8.on('mouseout', function(event){
+					m8.closePopup();
+				});
+				m9.on('mouseover', function(event){
+					m9.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[8].toString());
+				})
+				m9.on('mouseout', function(event){
+					m9.closePopup();
+				});
+				m10.on('mouseover', function(event){
+					m10.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[9].toString());
+				})
+				m10.on('mouseout', function(event){
+					m10.closePopup();
+				});
+				m11.on('mouseover', function(event){
+					m11.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[10].toString());
+				})
+				m11.on('mouseout', function(event){
+					m11.closePopup();
+				});
+				m12.on('mouseover', function(event){
+					m12.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[11].toString());
+				})
+				m12.on('mouseout', function(event){
+					m12.closePopup();
+				});
+				m13.on('mouseover', function(event){
+					m13.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[12].toString());
+				})
+				m13.on('mouseout', function(event){
+					m13.closePopup();
+				});
+				m14.on('mouseover', function(event){
+					m14.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[13].toString());
+				})
+				m14.on('mouseout', function(event){
+					m14.closePopup();
+				});
+				m15.on('mouseover', function(event){
+					m15.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[14].toString());
+				})
+				m15.on('mouseout', function(event){
+					m15.closePopup();
+				});
+				m16.on('mouseover', function(event){
+					m16.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[15].toString());
+				})
+				m16.on('mouseout', function(event){
+					m16.closePopup();
+				});
+				m17.on('mouseover', function(event){
+					m17.openPopup();
+					event.target.getPopup().setContent("Crimes: " + crime_arr[16].toString());
+				})
+				m17.on('mouseout', function(event){
+					m17.closePopup();
+				});
+			});
+			$.get(crime_api_url + '/codes', function(data){
+				app.codes = data;
+			});
+			$.get(crime_api_url + '/neighborhoods', function(data){
+				app.neighborhood_names = data;
+			});
+        }
+    </script>
+
+</head>
+<body onload="Prompt()">
+	<div id="dialog-form" style="z-index: 2">
+        <label for="name">URL for St. Paul Crime API:</label>
+        <input type="text" id="prompt_input" class="text ui-widget-content ui-corner-all" style="width: 320px;"/>
+    </div>
+
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="height: 80px">
+		<a class="navbar-brand" style="font-size: 250%; font-weight: bold;" href="index.html">St. Paul Crime</a>
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item">
+				<a class="nav-link" style="font-size: 150%; font-weight: bold" href="about.html">About</a>
+			</li>
+		</ul>
+	</nav>
+		
+	<div id="app">
+		<div class="row">
+			<div class="col-2"> 
+				<div class="vertical-checkbox">
+					<div><h5>Neighborhoods:</h5></div>
+					<div><input type="checkbox" id="N1" v-model="N1"><label for="N1">Conway/Battlecreek/Highwood</label></div>
+					<div><input type="checkbox" id="N2" v-model="N2"><label for="N2">Greater East Side</label></div>
+					<div><input type="checkbox" id="N3" v-model="N3"><label for="N3">West Side</label></div>
+					<div><input type="checkbox" id="N4" v-model="N4"><label for="N4">Dayton's Bluff</label></div>
+					<div><input type="checkbox" id="N5" v-model="N5"><label for="N5">Payne/Phalen</label></div>
+					<div><input type="checkbox" id="N6" v-model="N6"><label for="N6">North End</label></div>
+					<div><input type="checkbox" id="N7" v-model="N7"><label for="N7">Thomas/Dale(Frogtown)</label></div>
+					<div><input type="checkbox" id="N8" v-model="N8"><label for="N8">Summit/University</label></div>
+					<div><input type="checkbox" id="N9" v-model="N9"><label for="N9">West Seventh</label></div>
+					<div><input type="checkbox" id="N10" v-model="N10"><label for="N10">Como</label></div>
+					<div><input type="checkbox" id="N11" v-model="N11"><label for="N11">Hamline/Midway</label></div>
+					<div><input type="checkbox" id="N12" v-model="N12"><label for="N12">St. Anthony's Park</label></div>
+					<div><input type="checkbox" id="N13" v-model="N13"><label for="N13">Union Park</label></div>
+					<div><input type="checkbox" id="N14" v-model="N14"><label for="N14">Macalester-Groveland</label></div>
+					<div><input type="checkbox" id="N15" v-model="N15"><label for="N15">Highland</label></div>
+					<div><input type="checkbox" id="N16" v-model="N16"><label for="N16">Summit Hill</label></div>
+					<div><input type="checkbox" id="N17" v-model="N17"><label for="N17">Capitol River</label></div>
+				</div><!--checkbox-->
+			</div><!--filter col-->
+			<div class="col-10">
+				<div id="mapid"></div>
+				<p id="coords" style="text-align: end;"></p>
+			</div><!--map col-->
+		</div> <!--row1-->
+		<div class="row">
+			<div class="col-2">
+				<div class="vertical-checkbox">
+					<div><h5>Incident Types:</h5></div>
+					<div><input type="checkbox" id="C100" v-model="C100"><label for="C100">Murder</label></div>
+					<div><input type="checkbox" id="C200" v-model="C200"><label for="C200">Rape</label></div>
+					<div><input type="checkbox" id="C300" v-model="C300"><label for="C300">Robbery</label></div>
+					<div><input type="checkbox" id="C400" v-model="C400"><label for="C400">Aggravated Assault</label></div>
+					<div><input type="checkbox" id="C500" v-model="C500"><label for="C500">Burglary</label></div>
+					<div><input type="checkbox" id="C600" v-model="C600"><label for="C600">Theft</label></div>
+					<div><input type="checkbox" id="C700" v-model="C700"><label for="C700">Motor Vehicle Theft</label></div>
+					<div><input type="checkbox" id="C800" v-model="C800"><label for="C800">Assault</label></div>
+					<div><input type="checkbox" id="C900" v-model="C900"><label for="C900">Arson</label></div>
+					<div><input type="checkbox" id="C1400" v-model="C1400"><label for="C1400">Property Damage</label></div>
+					<div><input type="checkbox" id="C1800" v-model="C1800"><label for="C1800">Narcotics</label></div>
+					<div><input type="checkbox" id="C2619" v-model="C2619"><label for="C2619">Weapons</label></div>
+					<div><input type="checkbox" id="C9954" v-model="C9954"><label for="C9954">Proactive Police Visit</label></div>
+					<div><input type="checkbox" id="C9959" v-model="C9959"><label for="C9959">Community Engagement Event</label></div>
+					<div>
+						<label for="start">Start Date:</label>
+						<input id="start_date" type="date" id="start" name="start"
+							value="2019-10-01"
+							min="2008-08-14" max="2019-10-31">
+					</div>
+					<div>
+						<label for="start">End Date:</label>
+						<input id="end_date" type="date" id="end" name="end"
+							value="2019-10-31"
+							min="2008-08-14" max="2019-10-31">
+					</div>
+				</div>
+			</div>
+			<div class="col-8">
+				<div id=scrollbar >
+					<table class="table table-bordered table-responsive;">
+						<thead class="thead-info">
+							<tr>
+								<th scope="col" class="table-info font-weight-bold">Case Number</th>
+								<th scope="col" class="table-info font-weight-bold">Incident Type</th>
+								<th scope="col" class="table-info font-weight-bold">Incident</th>
+								<th scope="col" class="table-info font-weight-bold">Date</th>
+								<th scope="col" class="table-info font-weight-bold">Time</th>
+								<th scope="col" class="table-info font-weight-bold">Police Grid</th>
+								<th scope="col" class="table-info font-weight-bold">Block</th>
+								<th scope="col" class="table-info font-weight-bold">Neighborhood Name</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!--violent crimes-->
+							<tr @click="getData(incident)" style="cursor:pointer" v-for="(incident, key) in incidents " 
+							v-if="(incident.code < 300 || (incident.code < 500 && incident.code >= 400) || 
+							(incident.code < 900 && incident.code > 800)) && app.neighborhood_places['N'+incident.neighborhood_number][0] > bounds._southWest.lat 
+							&& app.neighborhood_places['N'+incident.neighborhood_number][0] < bounds._northEast.lat && app.neighborhood_places['N'+incident.neighborhood_number][1] > bounds._southWest.lng 
+							&& app.neighborhood_places['N'+incident.neighborhood_number][1] < bounds._northEast.lng && updateTable(incident.neighborhood_number, incident.code)" bgcolor="#ff5447"> 
+								<td>{{key}}</td>
+								<td>{{app.codes['C'+incident.code]}}</td> 
+								<td>{{incident.incident}}</td>
+								<td>{{incident.date}}</td>
+								<td>{{incident.time}}</td>
+								<td>{{incident.police_grid}}</td>
+								<td>{{incident.block}}</td>
+								<td>{{app.neighborhood_names['N'+incident.neighborhood_number]}}</td> 
+							</tr>
+
+							<!--property crimes-->
+							<tr @click="getData(incident)" style="cursor:pointer" v-for="(incident, key) in incidents" 
+							v-if="((incident.code < 400 && incident.code >= 300) || (incident.code < 800 && incident.code >= 500) || 
+							(incident.code < 1500 && incident.code >= 900)) && app.neighborhood_places['N'+incident.neighborhood_number][0] > bounds._southWest.lat 
+							&& app.neighborhood_places['N'+incident.neighborhood_number][0] < bounds._northEast.lat && app.neighborhood_places['N'+incident.neighborhood_number][1] > bounds._southWest.lng 
+							&& app.neighborhood_places['N'+incident.neighborhood_number][1] < bounds._northEast.lng && updateTable(incident.neighborhood_number, incident.code)" bgcolor="#47ceff">
+								<td>{{key}}</td>
+								<td>{{app.codes['C'+incident.code]}}</td> 
+								<td>{{incident.incident}}</td>
+								<td>{{incident.date}}</td>
+								<td>{{incident.time}}</td>
+								<td>{{incident.police_grid}}</td>
+								<td>{{incident.block}}</td>
+								<td>{{app.neighborhood_names['N'+incident.neighborhood_number]}}</td> 
+							</tr>
+
+							<!--other crimes-->
+							<tr @click="getData(incident)" style="cursor:pointer" v-for="(incident, key) in incidents" 
+							v-if="incident.code >= 1800 && app.neighborhood_places['N'+incident.neighborhood_number][0] > bounds._southWest.lat 
+							&& app.neighborhood_places['N'+incident.neighborhood_number][0] < bounds._northEast.lat && app.neighborhood_places['N'+incident.neighborhood_number][1] > bounds._southWest.lng 
+							&& app.neighborhood_places['N'+incident.neighborhood_number][1] < bounds._northEast.lng && updateTable(incident.neighborhood_number, incident.code)" bgcolor="#47ff9a">
+								<td>{{key}}</td>
+								<td>{{app.codes['C'+incident.code]}}</td>
+								<td>{{incident.incident}}</td>
+								<td>{{incident.date}}</td>
+								<td>{{incident.time}}</td>
+								<td>{{incident.police_grid}}</td>
+								<td>{{incident.block}}</td>
+								<td>{{app.neighborhood_names['N'+incident.neighborhood_number]}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div><!--scrollbar-->
+			</div><!--table col-->
+			<div class="col-2">
+				<div id="legend">
+					<table class="table table-sm table-responsive;">
+						<thead>
+							<tr>
+								<th scope="col" class="table-info font-weight-bold">Type of Crime</th>
+								<th scope="col" class="table-info font-weight-bold">Color</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="tableRow">
+								<td>Violent Crime</td>
+								<td bgcolor="#ff5447"></td>
+							</tr>
+							<tr class="tableRow">
+								<td>Property Crime</td>
+								<td bgcolor="#47ceff"></td>
+							</tr>
+							<tr class="tableRow">
+								<td>Other Crime</td>
+								<td bgcolor="#47ff9a">
+							</tr>
+						</tbody>
+					</table>
+				</div><!--legend-->
+			</div><!--legend col-->
+		</div><!--row 2-->
+	</div><!--app-->
+	
+	<script>	
+		let bounds;
+		let crime_arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+		app = new Vue({
+			el: "#app",
+			data: {
+				incidents: {},
+				codes: {},
+				neighborhood_names: {},
+				neighborhood_places: {
+					"N1": [44.922261, -93.027227],
+					"N2": [44.977473, -93.025327],
+					"N3": [44.931064, -93.080664],
+					"N4": [44.956252, -93.059503],
+					"N5": [44.976702, -93.068935],
+					"N6": [44.977405, -93.112685],
+					"N7": [44.960065, -93.120456],
+					"N8": [44.948733, -93.127346],
+					"N9": [44.930766, -93.119996],
+					"N10": [44.982184, -93.150126],
+					"N11": [44.966129, -93.161192],
+					"N12": [44.973303, -93.194188],
+					"N13": [44.948243, -93.174665],
+					"N14": [44.934211, -93.171586],
+					"N15": [44.910127, -93.170779],
+					"N16": [44.936824, -93.134851],
+					"N17": [44.950892, -93.094614]
+				},
+				N1: true,
+				N2: true,
+				N3: true,
+				N4: true,
+				N5: true,
+				N6: true,
+				N7: true,
+				N8: true,
+				N9: true,
+				N10: true,
+				N11: true,
+				N12: true,
+				N13: true,
+				N14: true,
+				N15: true,
+				N16: true,
+				N17: true,
+				C100: true,
+				C200: true,
+				C300: true,
+				C400: true,
+				C500: true,
+				C600: true,
+				C700: true,
+				C800: true,
+				C900: true,
+				C1400: true,
+				C1800: true,
+				C2619: true,
+				C9954: true,
+				C9959: true,
+			},
+			methods: {
+				updateTable: function(neighborhood, code) {
+					var temp_string;
+
+					if(code < 2619 && code > 982){
+						temp_string = code.toString().substring(0, 2) + "00";
+					}
+					else if(code < 900){
+						temp_string = code.toString().substring(0, 1) + "00";
+					}
+					else{
+						temp_string = code;
+					}
+					
+					if(this["N"+neighborhood] == true && this["C"+temp_string]){
+						return true;
+					}
+				}
+			}
+		});
+		
+		var mymap = L.map('mapid').setView([44.9537, -93.0900], 13).setMaxBounds(L.latLngBounds(L.latLng(44.902282, -93.195159), L.latLng(44.990488, -93.005340)));
+
+		L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',			
+			maxZoom: 18,
+			minZoom: 13,
+			trackResize: true,
+			id: 'mapbox/streets-v11',
+			accessToken: 'pk.eyJ1Ijoia29jaDg2OTciLCJhIjoiY2szcnI5ZmhzMDk5ZTNtdWg2aGFneHA1aSJ9.uASUNV83v6H2Qr0QPfUkWw'
+		}).addTo(mymap);
+		
+		L.Control.geocoder({
+			collapsed: false,
+		}).addTo(mymap);
+		
+		document.getElementById("start_date").addEventListener("change", function(){
+			$.get(crime_api_url_global  + '/incidents?start_date='+ document.getElementById("start_date").value +'&end_date=2019-10-31', function(data){
+				app.incidents = data;
+				crime_arr =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+				for (var key in app.incidents) {
+					if (app.incidents.hasOwnProperty(key)) {
+						crime_arr[app.incidents[key].neighborhood_number - 1] = crime_arr[app.incidents[key].neighborhood_number - 1] + 1;
+					}
+				}
+			});
+							
+			update_crime_markers();
+			app.$forceUpdate();
+		});
+		
+		document.getElementById("end_date").addEventListener("change", function(){
+			$.get(crime_api_url_global  + '/incidents?start_date=2019-10-1&end_date=' + document.getElementById("end_date").value, function(data){
+				app.incidents = data;
+				crime_arr =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+				for (var key in app.incidents) {
+					if (app.incidents.hasOwnProperty(key)) {
+						crime_arr[app.incidents[key].neighborhood_number - 1] = crime_arr[app.incidents[key].neighborhood_number - 1] + 1;
+					}
+				}
+				
+			});
+			
+			update_crime_markers();
+			app.$forceUpdate();
+		});
+		
+		mymap.addEventListener('move', function() {
+			document.getElementById("coords").innerHTML = mymap.getCenter();
+		});
+		
+		mymap.addEventListener('moveend', function() {
+			bounds = mymap.getBounds();
+			app.$forceUpdate();
+		});
+
+		function getData(data){
+			var temp_string;
+			var temp_string2;
+			var m;
+			temp_string = data.block.split(" ", 1);
+			temp_string2 = temp_string[0];
+			temp_string2 = temp_string2.substring(0, temp_string2.length-1);
+			temp_string = "Date: " + data.date + "Time: " + data.time + "Incident: " + data.incident;
+
+			if(isNaN(temp_string2) == false){
+				data.block = data.block.replace("X", "0");
+			}
+
+			$.getJSON( "https://nominatim.openstreetmap.org/search?q="+data.block+"&limit=1&bounded=1&format=json&viewbox=-93.195159,44.902282,-93.005340,44.990488", function( data ) {
+				let text_marker = document.createElement("div");
+				text_marker.textContent = temp_string;
+				let delete_marker = document.createElement("button");
+				delete_marker.textContent = "Delete Marker";
+				delete_marker.type = "button";
+				text_marker.appendChild(delete_marker);
+				
+				m = L.marker([data[0].lat,data[0].lon]).bindPopup(text_marker);
+				mymap.addLayer(m);
+	
+				mymap.flyTo([data[0].lat,data[0].lon], 18);
+				
+				delete_marker.onclick = function(){
+					mymap.removeLayer(m);
+				}
+				
+				m.on('mouseover', function(event){
+					m.openPopup();
+				})
+			});	
+		}
+		
+		function update_crime_markers(){
+			m1.on('mouseover', function(event){
+				m1.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[0].toString());
+			})
+			m1.on('mouseout', function(event){
+				m1.closePopup();
+			});
+			m2.on('mouseover', function(event){
+				m2.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[1].toString());
+			})
+			m2.on('mouseout', function(event){
+				m2.closePopup();
+			});
+			m3.on('mouseover', function(event){
+				m3.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[2].toString());
+			})
+			m3.on('mouseout', function(event){
+				m3.closePopup();
+			});
+			m4.on('mouseover', function(event){
+				m4.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[3].toString());
+			})
+			m4.on('mouseout', function(event){
+				m4.closePopup();
+			});
+			m5.on('mouseover', function(event){
+				m5.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[4].toString());
+			})
+			m5.on('mouseout', function(event){
+				m5.closePopup();
+			});
+			m6.on('mouseover', function(event){
+				m6.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[5].toString());
+			})
+			m6.on('mouseout', function(event){
+				m6.closePopup();
+			});
+			m7.on('mouseover', function(event){
+				m7.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[6].toString());
+			})
+			m7.on('mouseout', function(event){
+				m7.closePopup();
+			});
+			m8.on('mouseover', function(event){
+				m8.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[7].toString());
+			})
+			m8.on('mouseout', function(event){
+				m8.closePopup();
+			});
+			m9.on('mouseover', function(event){
+				m9.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[8].toString());
+			})
+			m9.on('mouseout', function(event){
+				m9.closePopup();
+			});
+			m10.on('mouseover', function(event){
+				m10.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[9].toString());
+			})
+			m10.on('mouseout', function(event){
+				m10.closePopup();
+			});
+			m11.on('mouseover', function(event){
+				m11.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[10].toString());
+			})
+			m11.on('mouseout', function(event){
+				m11.closePopup();
+			});
+			m12.on('mouseover', function(event){
+				m12.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[11].toString());
+			})
+			m12.on('mouseout', function(event){
+				m12.closePopup();
+			});
+			m13.on('mouseover', function(event){
+				m13.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[12].toString());
+			})
+			m13.on('mouseout', function(event){
+				m13.closePopup();
+			});
+			m14.on('mouseover', function(event){
+				m14.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[13].toString());
+			})
+			m14.on('mouseout', function(event){
+				m14.closePopup();
+			});
+			m15.on('mouseover', function(event){
+				m15.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[14].toString());
+			})
+			m15.on('mouseout', function(event){
+				m15.closePopup();
+			});
+			m16.on('mouseover', function(event){
+				m16.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[15].toString());
+			})
+			m16.on('mouseout', function(event){
+				m16.closePopup();
+			});
+			m17.on('mouseover', function(event){
+				m17.openPopup();
+				event.target.getPopup().setContent("Crimes: " + crime_arr[16].toString());
+			})
+			m17.on('mouseout', function(event){
+				m17.closePopup();
+			});
+		}
+	</script>
+</body>
+</html>

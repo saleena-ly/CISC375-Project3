@@ -1,0 +1,27 @@
+{
+    "name": "RESTful-webserver",
+    "version": "0.0.0",
+    "description": "RESTful Web Server using Node JS",
+    "author": {
+        "name": "Saleena Ly",
+        "email": "ly003004@stthomas.edu"
+    },
+    "contributors": [
+        {
+            "name": "Owen Kochevar",
+            "email": "koch8697@stthomas.edu"
+        }
+    ],
+    "main": "server.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/saleena-ly/CISC375-Project-3-RESTful-Server.git"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "js2xmlparser": "^4.0.0",
+        "sqlite3": "^4.1.0",
+        "vue": "^2.6.10"
+    }
+}
